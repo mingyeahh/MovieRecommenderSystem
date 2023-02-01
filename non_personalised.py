@@ -24,7 +24,7 @@ def nps(df, top):
     df['averageRating'] = df['movieId'].map(average_rating)
 
     # 2. Get the number of rating for each film
-    counts = train['movieId'].value_counts()
+    counts = df['movieId'].value_counts()
     df['rateTime'] = df['movieId'].map(counts)
 
     # 3. Get the number of genres for each film
@@ -53,45 +53,46 @@ def nps(df, top):
     return r
 
 
+if __name__=="__main__":
 
+    '''System Evaluation'''
+    # Build evaluation dataframe
+    # The Idea is to apply different metrics for evaluation. Metrics used: MSE, RMSE, Recall30 and Precision
+    dfn = pd.merge(dfr, dfm, on='movieId')
+    # Building train and testing set for further evaluation
+    train_users, test_users = train_test_split(np.arange(n_userIds), test_size=0.3, random_state=3)
+    train = dfn[dfn['userId'].isin(train_users)].copy()
+    test = dfn[dfn['userId'].isin(test_users)].copy()
 
-'''System Evaluation'''
-# Build evaluation dataframe
-# The Idea is to apply different metrics for evaluation. Metrics used: MSE, RMSE, Recall30 and Precision
+    # Get the list of top recommendations
+    r = nps(train, TOP)
 
-# Building train and testing set for further evaluation
-train_users, test_users = train_test_split(np.arange(n_userIds), test_size=0.3, random_state=3)
-train = dfn[dfn['userId'].isin(train_users)].copy()
-test = dfn[dfn['userId'].isin(test_users)].copy()
+    movie_list = r['movieId'].values
 
-# Get the list of top recommendations
-r = nps(train, TOP)
+    # Get rows that has the same movie id as the recommended 30 films
+    e_df = test.loc[test['movieId'].isin(movie_list)]
 
-movie_list = r['movieId'].values
+    e_df = e_df.drop(['title', 'genres'], axis = 1)
+    
+    average_rating = train.groupby('movieId')['rating'].mean()
+    # Make a new column for predicted rating
+    e_df['pred'] = e_df['movieId'].map(average_rating)
 
-# Get rows that has the same movie id as the recommended 30 films
-e_df = test.loc[test['movieId'].isin(movie_list)]
+    # Evaluation in the metric of mse and rmse
+    mse = mean_squared_error(e_df['rating'].values, e_df['pred'].values)
+    rmse = np.sqrt(mse)
 
-e_df = e_df.drop(['title', 'genres'], axis = 1)
+    # Evaluation in the metric of precision and recall30
+    all_rec = len(e_df)
+    tp = len(e_df[(e_df['rating'] >= GOOD) & (e_df['pred'] >= GOOD)])
+    precision =  tp / all_rec
 
-# Make a new column for predicted rating
-e_df['pred'] = e_df['movieId'].map(average_rating)
+    gt_good = len(test[(test['rating'] >= GOOD)])
+    recall = tp / gt_good
 
-# Evaluation in the metric of mse and rmse
-mse = mean_squared_error(e_df['rating'].values, e_df['pred'].values)
-rmse = np.sqrt(mse)
-
-# Evaluation in the metric of precision and recall30
-all_rec = len(e_df)
-tp = len(e_df[(e_df['rating'] >= GOOD) & (e_df['pred'] >= GOOD)])
-precision =  tp / all_rec
-
-gt_good = len(test[(test['rating'] >= GOOD)])
-recall = tp / gt_good
-
-print('-- Evaluation for non-psersonalised recommender system --')
-print(f'Recommendation number is {TOP}')
-print(f'MSE: {mse}')
-print(f'RMSE: {rmse}')
-print(f'percision: {precision}')
-print(f'recall: {recall}')
+    print('-- Evaluation for non-psersonalised recommender system --')
+    print(f'Recommendation number is {TOP}')
+    print(f'MSE: {mse}')
+    print(f'RMSE: {rmse}')
+    print(f'percision: {precision}')
+    print(f'recall: {recall}')

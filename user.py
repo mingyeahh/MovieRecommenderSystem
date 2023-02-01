@@ -1,5 +1,6 @@
-from non_personalised import nps
 print('Loading...\n')
+from non_personalised import *
+from dataprocessing import *
 
 # Get the movie id from the movie input by the user
 # def getMovieid(movieStr):
@@ -43,7 +44,8 @@ def show_rec(df):
         print(f'[{i+1}]:  {rl[i]}')
 
 # Intro to users about the system
-print('~~ Hello there! Welcome to use this movie recommender system! Meow~~')
+print('~~ Hello there! Welcome to Meowie Recommender System! Meow~~')
+print('(Meowie is movie in cat language)')
 print('My name is Kiki🐱, a cat who loves watching movies! Do you want to know more about the system?\n')
 print('(A) Yes, please.')
 print('(B) Skip the introduction.')
@@ -54,10 +56,9 @@ print('-------------------------------------------------------------------------
 
 while True:
     if login_action == 'A':
-        print('🐱: The system offered two type of movie recommendation: a personalised one and a non-personalised one.')
-        print('🐱: The personalised system applies a pre-trained neural collaborative filtering model for movie recommendation,')
-        print('which means it gives prediction by comparing your past preference(movie ratings) with other users who are similar to you and recommend to you some movies these users rank high :D! Meow~ Thus, you will need to log in with your userid so we can store your user preference.\n')
-        print('🐱: Of course! If you don\'t want your data to be used, you can use the non-personalised system, which will give recommendation according to the average ranking, number of watches and number of genre of movies in our database. Top 30 movies will be recommended according to the conditions mentioned before.')
+        print('🐱: The system offers two types of movie recommendation: a personalised one and a non-personalised one.')
+        print('🐱: The personalised system applies a pre-trained neural collaborative filtering model for movie recommendations,which means it gives predictions by comparing your past preferences (movie ratings) with other users who are similar to you and recommending to you some movies these users ranked high :D! Meow~ Thus, you will need to log in with your userid so we can store your user preference.\n')
+        print('🐱: Of course, if you don\'t want your data to be used, you can use the non-personalised system, which will give recommendations according to the average ranking, number of watches and number of genrse of movies in our database. The top 30 movies will be recommended according to those conditions.')
         print('🐱: Hope you like the meowie recommender system! Meow!')
         print('\n')
         input("Press Enter to continue :")
@@ -94,14 +95,22 @@ while True:
 
 
     elif r_type == 'B':
+        print('🐱: Meowooo! I think you might enjoy these meowies!')
+        print('---------------------------------------------------------------------\n')
         # Building dataset for non-personalised system
         dfn = pd.merge(dfr, dfm, on='movieId')
         r = nps(dfn, TOP)
-        show_rec(df)
+        show_rec(r)
+        print('\n🐱: The left are the rankings produced by the system!')
+        print('\n🐱: Hope you enjoy it!')
         break
         
         
 
     else:
         print('Please enter a correct input.')
+        r_type = input("\nEnter: ").upper()
+        
 
+print('🐱: Thank you for trying the meowie system 1.0!')
+print('Cooler version is coming soon ...')
