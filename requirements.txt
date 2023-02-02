@@ -1,0 +1,7 @@
+argparse
+torch
+pandas
+plotly-express
+scikit-learn
+numpy
+matplotlib

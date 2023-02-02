@@ -1,33 +1,7 @@
 print('Loading...\n')
 from non_personalised import *
 from dataprocessing import *
-
-# Get the movie id from the movie input by the user
-# def getMovieid(movieStr):
-#     while True:
-#         # Check whether the dataset contains the input string as a substring
-#         if (dfm['title'].str.contains(movieStr)).any():
-#             selection = dfm[dfm['title'].str.contains(movieStr)]
-#             print('There is a list of movies from the dataset based on your input.')
-#             print('Please choose one of them and \033[4menter the movie ID\033[0m:\n')
-#             print(f"{'ID':>4} | Title")
-#             print("-----+"+'-'*20)
-#             for i, row in selection.iterrows():
-#                 print(f"{row['movieId']:>4} | {row['title']}")
-#                 print('  ')
-#             movieid = input("\nEnter the movieid: ")
-#             while True:
-#                 # Check whether the input movie id is valid -> is an integer and is on the given list
-#                 if movieid.isnumeric() and int(movieid) in selection['movieId'].values:
-#                     return int(movieid)
-#                 else:
-#                     movieid = input('Please enter a valid movieId on the given list: ')
-
-#         else:
-#             print('Sorry, the input movie is not in our database :(. ')
-#             print('Please check whether you have typed in the correct movie name or try another movie?')
-
-#             movieStr = input("\nEnter the film name: ")
+from personalisedCollaborative import *
             
 # Check whether the input user id is valid (is numeric and is in the database)            
 def checkUserid(userid):
@@ -87,10 +61,15 @@ while True:
     if r_type == 'A':
         print('')
         print('Please enter your user ID:')
-        print('  ')
+        print(' ')
         userid = input("\nEnter: ")
-        u = checkUserid(userid)
-        print('User id is:',u)
+        checkUserid(userid)
+        # print('User id is:',u)
+        dfn = pd.merge(dfr, dfm, on='movieId')
+        r = rec_personalised(userid, dfn)
+        for i in range(len(r)):
+            print(f'[{i+1}]:  {r[i]}')
+
         break
 
 
@@ -114,3 +93,35 @@ while True:
 
 print('🐱: Thank you for trying the meowie system 1.0!')
 print('Cooler version is coming soon ...')
+
+
+
+
+
+
+# Get the movie id from the movie input by the user -> future feature, enable more precise recommendation
+# def getMovieid(movieStr):
+#     while True:
+#         # Check whether the dataset contains the input string as a substring
+#         if (dfm['title'].str.contains(movieStr)).any():
+#             selection = dfm[dfm['title'].str.contains(movieStr)]
+#             print('There is a list of movies from the dataset based on your input.')
+#             print('Please choose one of them and \033[4menter the movie ID\033[0m:\n')
+#             print(f"{'ID':>4} | Title")
+#             print("-----+"+'-'*20)
+#             for i, row in selection.iterrows():
+#                 print(f"{row['movieId']:>4} | {row['title']}")
+#                 print('  ')
+#             movieid = input("\nEnter the movieid: ")
+#             while True:
+#                 # Check whether the input movie id is valid -> is an integer and is on the given list
+#                 if movieid.isnumeric() and int(movieid) in selection['movieId'].values:
+#                     return int(movieid)
+#                 else:
+#                     movieid = input('Please enter a valid movieId on the given list: ')
+
+#         else:
+#             print('Sorry, the input movie is not in our database :(. ')
+#             print('Please check whether you have typed in the correct movie name or try another movie?')
+
+#             movieStr = input("\nEnter the film name: ")

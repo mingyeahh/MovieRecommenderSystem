@@ -15,7 +15,7 @@ GOOD = 7
 ############## -> all of these are generic features                       ##############
 
 
-''' The system for non-personalised recommender system '''
+''' The system for non-personalised recommender '''
 
 def nps(df, top):
     # ------ Build feature data --------
