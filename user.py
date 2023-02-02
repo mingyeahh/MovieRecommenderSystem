@@ -66,10 +66,10 @@ while True:
         checkUserid(userid)
         # print('User id is:',u)
         dfn = pd.merge(dfr, dfm, on='movieId')
-        r = rec_personalised(userid, dfn)
-        for i in range(len(r)):
-            print(f'[{i+1}]:  {r[i]}')
-
+        r = rec_personalised(int(userid), dfn, TOP)
+        recommended = dfm.loc[dfm['movieId'].isin(r)]
+        show_rec(recommended)
+        print('\n')
         break
 
 

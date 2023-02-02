@@ -90,9 +90,28 @@ if __name__=="__main__":
     gt_good = len(test[(test['rating'] >= GOOD)])
     recall = tp / gt_good
 
+    # Calculate the cosine similarity
+    movie = r['movieId'].values
+    temp = dfm.loc[dfm['movieId'].isin(movie)]
+    d = dict(zip(temp['movieId'], temp['genres']))
+    r['genres'] = r['movieId'].map(d)
+    s = r['genres']
+    oneh = pd.get_dummies(s.apply(pd.Series).stack()).sum(level=0)
+    oneh['combined']= oneh.values.tolist()
+    onehot = oneh['combined']
+    total_cosine = 0
+    for i in range(len(onehot)):
+        for j in range(i+1,len(onehot)):
+            a = np.array(onehot.iloc[i])
+            b = np.array(onehot.iloc[j])
+            total_cosine += a.dot(b)/(np.linalg.norm(a)*np.linalg.norm(b))
+    mean_cosine = total_cosine / (len(onehot)*(len(onehot)-1)/2)
+
+
     print('-- Evaluation for non-psersonalised recommender system --')
     print(f'Recommendation number is {TOP}')
     print(f'MSE: {mse}')
     print(f'RMSE: {rmse}')
     print(f'percision: {precision}')
     print(f'recall: {recall}')
+    print(f'mean cosine similarity: {mean_cosine}')

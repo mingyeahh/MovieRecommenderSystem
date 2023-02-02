@@ -84,23 +84,21 @@ model = NeuralMF(n_userIds, n_movieIds, mlp_dims=[32,64,32,16], gmf_dims=10).to(
 model.load_state_dict(torch.load('model_weights.pth'))
 model.eval()
 
-# testUser = torch.tensor([[13]]).to(device)
-# testMovie = torch.tensor([[0]]).to(device)
-# print(model(testUser, testMovie))
+
 
 '''Recommendation for the system'''
 # For each user, store a list of all the movies they haven't seen
 # Used the model for the unseen list for the user, predict and recommend the top 30 film the user will like
-def rec_personalised(userid, df):
-    n_movieIds = df['movieId'].unique()
-    all_movies = set(range(n_movieIds))
+def rec_personalised(userid, df, TOP):
+    movieIds = df['movieId'].unique()
+    all_movies = set(movieIds)
     # the movies the current user has seen
     seen = df.loc[df['userId'] == userid, 'movieId'].values
     # the movies the current user has not seen 
     unseen = list(all_movies - set(seen))
     # pass the userid and the list of movie unseen by the user to the model
     pred_movie = torch.tensor(unseen).to(device)
-    pred_user = torch.tensor(userid).to(device)
+    pred_user = torch.tensor([userid]*len(unseen)).to(device)
     # Get the prediction from the model
     pred = model(pred_user, pred_movie)[:,0] # remove 2nd dimension
     # Sort the prediction by index, get the top ones
@@ -109,3 +107,5 @@ def rec_personalised(userid, df):
     recommendation = pred_movie[idx.cpu()].cpu().tolist()
     
     return recommendation
+dfn = pd.merge(dfr, dfm, on='movieId')
+print(rec_personalised(38, dfn, 30))
