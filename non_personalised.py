@@ -105,7 +105,7 @@ if __name__=="__main__":
             a = np.array(onehot.iloc[i])
             b = np.array(onehot.iloc[j])
             total_cosine += a.dot(b)/(np.linalg.norm(a)*np.linalg.norm(b))
-    mean_cosine = total_cosine / (len(onehot)*(len(onehot)-1)/2)
+    mean_cosine = - (total_cosine / (len(onehot)*(len(onehot)-1)/2))
 
 
     print('-- Evaluation for non-psersonalised recommender system --')
