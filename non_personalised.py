@@ -3,9 +3,9 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 
-TOP = 30
+TOP = 10
 # Good rate threshold
-GOOD = 7
+GOOD = 3.5
 
 
 ############## The basic idea of the non-personalised recommender system  ##############
@@ -69,7 +69,7 @@ if __name__=="__main__":
 
     movie_list = r['movieId'].values
 
-    # Get rows that has the same movie id as the recommended 30 films
+    # Get rows that has the same movie id as the recommended 10 films
     e_df = test.loc[test['movieId'].isin(movie_list)]
 
     e_df = e_df.drop(['title', 'genres'], axis = 1)
@@ -82,7 +82,7 @@ if __name__=="__main__":
     mse = mean_squared_error(e_df['rating'].values, e_df['pred'].values)
     rmse = np.sqrt(mse)
 
-    # Evaluation in the metric of precision and recall30
+    # Evaluation in the metric of precision and recall10
     all_rec = len(e_df)
     tp = len(e_df[(e_df['rating'] >= GOOD) & (e_df['pred'] >= GOOD)])
     precision =  tp / all_rec
@@ -105,7 +105,7 @@ if __name__=="__main__":
             a = np.array(onehot.iloc[i])
             b = np.array(onehot.iloc[j])
             total_cosine += a.dot(b)/(np.linalg.norm(a)*np.linalg.norm(b))
-    mean_cosine = - (total_cosine / (len(onehot)*(len(onehot)-1)/2))
+    mean_cosine = 1 - (total_cosine / (len(onehot)*(len(onehot)-1)/2))
 
 
     print('-- Evaluation for non-psersonalised recommender system --')
