@@ -1,5 +1,5 @@
-# MovieRecommenderSystem
-This project aims at providing two different types of movie recommender system - personalised and non-personalised, and comparing the differences between them. To achieve better performance, the personalised system is a collaborative filtering system that applies a deep learning technique (NCF) \cite{b1} with generalised matrix factorisation (GMF) and multi-layer perceptron (MLP) model architecture components. The non-personalised system is a system to output the highest ranked movies based on the database, conditioning on the average rating, watch time and diversity of the genres. The final presentation of the two types of systems are in the ``Meowie Recommender System" Application.
+# Meowie Recommender System
+This project aims at providing two different types of movie recommender system - personalised and non-personalised, and comparing the differences between them. To achieve better performance, the personalised system is a collaborative filtering system that applies a deep learning technique (NCF)  with generalised matrix factorisation (GMF) and multi-layer perceptron (MLP) model architecture components. The non-personalised system is a system to output the highest ranked movies based on the database, conditioning on the average rating, watch time and diversity of the genres. Detailed information is presented in the [Recommender_System.pdf](Recommender_System.pdf) report.
 
 ## Getting Started
 Here is how you could utilise the code.
